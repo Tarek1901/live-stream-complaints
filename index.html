@@ -167,8 +167,7 @@
       .c-foot a{font-weight:700;word-break:break-all}
 
       /* ---------- Info sections ---------- */
-      .sections{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:26px}
-      @media (max-width:920px){ .sections{grid-template-columns:1fr} }
+      .sections{display:grid;grid-template-columns:1fr;gap:22px;margin-top:26px}
       .info{padding:20px 22px}
       .info h2{margin:0 0 12px;font-size:1.25rem;font-weight:900}
       .steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:step}
@@ -181,14 +180,6 @@
       .steps span{color:var(--muted);font-size:.93rem}
       .info p{margin:0 0 10px;color:var(--muted);font-size:.96rem}
       .info p b{color:var(--ink)}
-      .codebox{
-        background:var(--surface-2);border:1.5px solid var(--line);border-radius:10px;
-        padding:12px 14px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;
-        direction:ltr;text-align:left;white-space:pre;overflow-x:auto;color:var(--ink);margin:10px 0;
-      }
-      .gh-steps{margin:0;padding-inline-start:20px;color:var(--muted);font-size:.96rem}
-      .gh-steps li{margin-bottom:7px}
-      .gh-steps b{color:var(--ink)}
       .notice{
         margin-top:26px;border:1.5px solid var(--amber);background:var(--amber-soft);
         border-radius:var(--radius);padding:16px 20px;font-size:.95rem;
@@ -350,18 +341,6 @@
           </ol>
         </section>
 
-        <section class="card info" aria-labelledby="ghTitle">
-          <h2 id="ghTitle">نشر الموقع على GitHub Pages</h2>
-          <p>الموقع ملف <b>index.html</b> واحد، وبيشتغل على استضافة GitHub Pages المجانية وبيصير إلو رابط عام بينبعت لأي حدا:</p>
-          <ol class="gh-steps">
-            <li>من حسابك على GitHub اعمل مستودع جديد (<b>New repository</b>) وسمّيه متل <b>report-streams</b> وخليه <b>Public</b>.</li>
-            <li>ارفع ملف <b>index.html</b> للمستودع (<b>Add file ← Upload files</b>).</li>
-            <li>من إعدادات المستودع روح على <b>Settings ← Pages</b> واختر النشر من فرع <b>main</b>.</li>
-            <li>بعد دقائق بيصير موقعك على رابط بهالشكل:</li>
-          </ol>
-          <div class="codebox">https://USERNAME.github.io/report-streams/</div>
-          <p>هي النسخة نسخة عرض تجريبية لتقديم الفكرة: الشكاوى يلي بتنكتب فيها بتنعرض داخل الصفحة مباشرة. النسخة الرسمية المعتمدة من الدولة بتحتاج قاعدة بيانات مركزية ومراجعة للشكاوى قبل اعتمادها نهائياً، وهي خطوة تطوير تالية بعد قبول الفكرة.</p>
-        </section>
       </div>
 
       <div class="notice" role="note">
