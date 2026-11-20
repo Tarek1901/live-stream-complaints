@@ -30,7 +30,7 @@
         --radius:14px;
       }
       @media (prefers-color-scheme: dark){
-        :root{
+        :root:not([data-theme="light"]){
           --bg:#0f141b;
           --surface:#182130;
           --surface-2:#1e2939;
@@ -48,6 +48,23 @@
           --shadow:0 10px 28px rgba(0,0,0,.35);
         }
       }
+      :root[data-theme="dark"]{
+        --bg:#0f141b;
+        --surface:#182130;
+        --surface-2:#1e2939;
+        --ink:#edf2f7;
+        --muted:#9fb0c3;
+        --line:#2c3a4e;
+        --navy:#2c5a8a;
+        --red:#e0655c;
+        --red-soft:#3a2321;
+        --amber:#e0b34c;
+        --amber-soft:#38300f;
+        --green:#4cc084;
+        --green-soft:#173528;
+        --chip:#24344a;
+        --shadow:0 10px 28px rgba(0,0,0,.35);
+      }
       *{box-sizing:border-box}
       html{scroll-behavior:smooth}
       body{
@@ -57,7 +74,8 @@
       }
       button,[role="button"],select,summary,input:not([type="checkbox"],[type="radio"]){min-height:2.25rem}
       a{color:var(--navy)}
-      @media (prefers-color-scheme: dark){ a{color:#8fc1f0} }
+      @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) a{color:#8fc1f0} }
+      :root[data-theme="dark"] a{color:#8fc1f0}
 
       .wrap{max-width:1160px;margin:0 auto;padding:0 16px 56px}
 
@@ -67,11 +85,22 @@
         padding:34px 0 30px;margin-bottom:26px;
       }
       .hero .wrap{padding-bottom:0}
+      .topbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:16px}
       .hero-tag{
         display:inline-block;background:rgba(255,255,255,.14);
         border:1px solid rgba(255,255,255,.3);
-        padding:4px 14px;border-radius:999px;font-size:.85rem;font-weight:700;margin-bottom:14px;
+        padding:4px 14px;border-radius:999px;font-size:.85rem;font-weight:700;
       }
+      .toggles{display:flex;flex-wrap:wrap;gap:8px}
+      .toggle-btn{
+        display:inline-flex;align-items:center;gap:7px;
+        background:rgba(255,255,255,.12);color:#fff;
+        border:1px solid rgba(255,255,255,.35);border-radius:999px;
+        padding:5px 16px;font-family:inherit;font-weight:800;font-size:.88rem;
+        cursor:pointer;min-height:38px;
+      }
+      .toggle-btn svg{flex:none}
+      .toggle-btn:active{transform:scale(.97)}
       .hero h1{margin:0 0 10px;font-size:clamp(1.7rem,4.5vw,2.6rem);font-weight:900;line-height:1.35}
       .hero p{margin:0;max-width:720px;font-size:1.05rem;opacity:.92}
       .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
@@ -209,7 +238,6 @@
         border-radius:var(--radius);padding:16px 20px;font-size:.95rem;
       }
       .notice b{color:var(--amber)}
-      @media (prefers-color-scheme: dark){ .notice b{color:var(--amber)} }
       footer{margin-top:30px;text-align:center;color:var(--muted);font-size:.88rem}
     </style>
   </head>
@@ -217,18 +245,27 @@
 
     <header class="hero">
       <div class="wrap">
-        <span class="hero-tag">منصة مجتمعية للإبلاغ والمتابعة</span>
-        <h1>الإبلاغ عن البثوث غير الأخلاقية</h1>
-        <p>نموذج موقع مقترح لتقديمه للجهات المعنية: أي حدا بيشوف بثّاً مباشراً فيه محتوى غير أخلاقي أو مخالف بيقدر يقدّم شكوى ببيانات الحساب والمنصة ونوع المخالفة، والشكوى بتنعرض علناً في سجل المشتكى عليهم حتى يعرفها الجميع.</p>
-        <div class="hero-actions">
-          <a class="btn btn-red" href="#submit">قدّم شكوى الآن</a>
-          <a class="btn btn-ghost" href="#registry">سجل المشتكى عليهم</a>
+        <div class="topbar">
+          <span class="hero-tag" data-i18n="heroTag">منصة مجتمعية للإبلاغ والمتابعة</span>
+          <div class="toggles">
+            <button type="button" class="toggle-btn" id="themeBtn" aria-label="تبديل الوضع الليلي"></button>
+            <button type="button" class="toggle-btn" id="langBtn" aria-label="Switch language">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              <span id="langBtnText">English</span>
+            </button>
+          </div>
         </div>
-        <div class="stats" aria-label="إحصائيات الشكاوى">
-          <div class="stat"><b id="statTotal">0</b><span>إجمالي الشكاوى المعروضة</span></div>
-          <div class="stat"><b id="statAccounts">0</b><span>حساب مُشتكى عليه</span></div>
-          <div class="stat"><b id="statPending">0</b><span>قيد التحقق والمتابعة</span></div>
-          <div class="stat"><b id="statDone">0</b><span>شكاوى بحالة «مُحالة» بالسجل</span></div>
+        <h1 data-i18n="heroTitle">الإبلاغ عن البثوث غير الأخلاقية</h1>
+        <p data-i18n="heroDesc">نموذج موقع مقترح لتقديمه للجهات المعنية: أي حدا بيشوف بثّاً مباشراً فيه محتوى غير أخلاقي أو مخالف بيقدر يقدّم شكوى ببيانات الحساب والمنصة ونوع المخالفة، والشكوى بتنعرض علناً في سجل المشتكى عليهم حتى يعرفها الجميع.</p>
+        <div class="hero-actions">
+          <a class="btn btn-red" href="#submit" data-i18n="btnSubmit">قدّم شكوى الآن</a>
+          <a class="btn btn-ghost" href="#registry" data-i18n="btnRegistry">سجل المشتكى عليهم</a>
+        </div>
+        <div class="stats" data-i18n-aria="statsAria" aria-label="إحصائيات الشكاوى">
+          <div class="stat"><b id="statTotal">0</b><span data-i18n="statTotal">إجمالي الشكاوى المعروضة</span></div>
+          <div class="stat"><b id="statAccounts">0</b><span data-i18n="statAccounts">حساب مُشتكى عليه</span></div>
+          <div class="stat"><b id="statPending">0</b><span data-i18n="statPending">قيد التحقق والمتابعة</span></div>
+          <div class="stat"><b id="statDone">0</b><span data-i18n="statDone">شكاوى بحالة «مُحالة» بالسجل</span></div>
         </div>
       </div>
     </header>
@@ -239,25 +276,25 @@
         <!-- ======== Form ======== -->
         <section class="card" id="submit" aria-labelledby="formTitle">
           <div class="card-head">
-            <h2 id="formTitle">تقديم شكوى جديدة</h2>
-            <p>عبّي البيانات متل ما شفتها بالبث، وكل ما كانت أدقّ كانت الشكوى أقوى.</p>
+            <h2 id="formTitle" data-i18n="formTitle">تقديم شكوى جديدة</h2>
+            <p data-i18n="formSub">عبّي البيانات متل ما شفتها بالبث، وكل ما كانت أدقّ كانت الشكوى أقوى.</p>
           </div>
           <form id="complaintForm" novalidate>
             <div class="form-ok" id="formOk" role="status"></div>
 
             <div class="field" id="f-account">
-              <label for="account">اسم الحساب المُشتكى عليه <span class="req">*</span></label>
-              <input id="account" type="text" placeholder="مثال: اسم صفحة البث أو اسم المستخدم" autocomplete="off" />
-              <div class="err">لازم تكتب اسم الحساب المُشتكى عليه.</div>
+              <label for="account" data-i18n-html="fAccount">اسم الحساب المُشتكى عليه <span class="req">*</span></label>
+              <input id="account" type="text" data-i18n-ph="accountPh" placeholder="مثال: اسم صفحة البث أو اسم المستخدم" autocomplete="off" />
+              <div class="err" data-i18n="errAccount">لازم تكتب اسم الحساب المُشتكى عليه.</div>
             </div>
 
             <div class="field" id="f-handle">
-              <label for="handle">معرّف الحساب (يوزر) <span class="opt">— اختياري</span></label>
+              <label for="handle" data-i18n-html="fHandle">معرّف الحساب (يوزر) <span class="opt">— اختياري</span></label>
               <input id="handle" type="text" placeholder="@username" autocomplete="off" dir="ltr" style="text-align:left" />
             </div>
 
             <div class="field" id="f-platform">
-              <label for="platform">المنصة <span class="req">*</span></label>
+              <label for="platform" data-i18n-html="fPlatform">المنصة <span class="req">*</span></label>
               <select id="platform">
                 <option value="">— اختر المنصة —</option>
                 <option>تيك توك</option>
@@ -266,18 +303,18 @@
                 <option>يوتيوب</option>
                 <option>منصة أخرى</option>
               </select>
-              <div class="err">اختر المنصة يلي صار عليها البث.</div>
+              <div class="err" data-i18n="errPlatform">اختر المنصة يلي صار عليها البث.</div>
             </div>
 
             <div class="field" id="f-link">
-              <label for="link">رابط البث أو رابط الحساب <span class="req">*</span></label>
+              <label for="link" data-i18n-html="fLink">رابط البث أو رابط الحساب <span class="req">*</span></label>
               <input id="link" type="url" placeholder="https://…" dir="ltr" style="text-align:left" autocomplete="off" />
-              <div class="hint">الرابط هو الدليل الأساسي — انسخه من البث نفسه إذا فيك.</div>
-              <div class="err">حط رابط البث أو الحساب (بيبدأ بـ https://).</div>
+              <div class="hint" data-i18n="linkHint">الرابط هو الدليل الأساسي — انسخه من البث نفسه إذا فيك.</div>
+              <div class="err" data-i18n="errLink">حط رابط البث أو الحساب (بيبدأ بـ https://).</div>
             </div>
 
             <div class="field" id="f-type">
-              <label for="type">نوع المخالفة <span class="req">*</span></label>
+              <label for="type" data-i18n-html="fType">نوع المخالفة <span class="req">*</span></label>
               <select id="type">
                 <option value="">— اختر نوع المخالفة —</option>
                 <option>محتوى غير أخلاقي / إيحاءات جنسية</option>
@@ -287,62 +324,62 @@
                 <option>تحريض على العنف أو الكراهية</option>
                 <option>مخالفة أخرى</option>
               </select>
-              <div class="err">اختر نوع المخالفة.</div>
+              <div class="err" data-i18n="errType">اختر نوع المخالفة.</div>
             </div>
 
             <div class="field" id="f-desc">
-              <label for="desc">وصف المخالفة <span class="req">*</span></label>
-              <textarea id="desc" placeholder="شو صار بالبث بالضبط؟ إيمت شفتو؟ وشو المحتوى المخالف يلي انعرض؟"></textarea>
-              <div class="err">اكتب وصفاً قصيراً وواضحاً للمخالفة (١٠ أحرف على الأقل).</div>
+              <label for="desc" data-i18n-html="fDesc">وصف المخالفة <span class="req">*</span></label>
+              <textarea id="desc" data-i18n-ph="descPh" placeholder="شو صار بالبث بالضبط؟ إيمت شفتو؟ وشو المحتوى المخالف يلي انعرض؟"></textarea>
+              <div class="err" data-i18n="errDesc">اكتب وصفاً قصيراً وواضحاً للمخالفة (١٠ أحرف على الأقل).</div>
             </div>
 
             <div class="field" id="f-files">
-              <label>إرفاق صور أو فيديوهات كدليل <span class="opt">— اختياري</span></label>
+              <label data-i18n-html="fFiles">إرفاق صور أو فيديوهات كدليل <span class="opt">— اختياري</span></label>
               <div class="upload-box">
                 <input id="evidence" type="file" accept="image/*,video/*" multiple hidden />
                 <button type="button" class="upload-btn" id="uploadBtn">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="m6 10 6-6 6 6"/><path d="M4 20h16"/></svg>
-                  ارفع صور أو فيديوهات
+                  <span data-i18n="uploadBtn">ارفع صور أو فيديوهات</span>
                 </button>
-                <div class="hint">لقطات شاشة أو مقاطع قصيرة من البث بتقوّي الشكوى — لحد ٦ ملفات، وبتنعرض مع الشكوى بالسجل العلني.</div>
+                <div class="hint" data-i18n="uploadHint">لقطات شاشة أو مقاطع قصيرة من البث بتقوّي الشكوى — لحد ٦ ملفات، وبتنعرض مع الشكوى بالسجل العلني.</div>
                 <div class="attach-list" id="attachList"></div>
                 <div class="attach-err" id="attachErr" role="alert"></div>
               </div>
             </div>
 
             <div class="field">
-              <label for="when">تاريخ ووقت البث <span class="opt">— اختياري</span></label>
+              <label for="when" data-i18n-html="fWhen">تاريخ ووقت البث <span class="opt">— اختياري</span></label>
               <input id="when" type="datetime-local" />
             </div>
 
             <div class="field">
-              <label for="reporter">اسمك كمُبلِّغ <span class="opt">— اختياري، بيظهر «مُبلِّغ مجهول» إذا تركتو فاضي</span></label>
-              <input id="reporter" type="text" placeholder="اسمك أو اتركه فاضي" autocomplete="name" />
+              <label for="reporter" data-i18n-html="fReporter">اسمك كمُبلِّغ <span class="opt">— اختياري، بيظهر «مُبلِّغ مجهول» إذا تركتو فاضي</span></label>
+              <input id="reporter" type="text" data-i18n-ph="reporterPh" placeholder="اسمك أو اتركه فاضي" autocomplete="name" />
             </div>
 
             <label class="checkline">
               <input type="checkbox" id="truth" />
-              <span>أقرّ إنو المعلومات يلي كتبتها صحيحة حسب ما شفتو بنفسي، وبعرف إنو الشكوى الكاذبة أو التشهير بدون دليل بيعرّض صاحبها للمساءلة.</span>
+              <span data-i18n="truthText">أقرّ إنو المعلومات يلي كتبتها صحيحة حسب ما شفتو بنفسي، وبعرف إنو الشكوى الكاذبة أو التشهير بدون دليل بيعرّض صاحبها للمساءلة.</span>
             </label>
             <div class="field" id="f-truth" style="margin-top:-6px">
-              <div class="err">لازم تأكّد صحة المعلومات قبل الإرسال.</div>
+              <div class="err" data-i18n="errTruth">لازم تأكّد صحة المعلومات قبل الإرسال.</div>
             </div>
 
-            <button class="submit-btn" type="submit">نشر الشكوى في السجل العلني</button>
+            <button class="submit-btn" type="submit" data-i18n="submitBtn">نشر الشكوى في السجل العلني</button>
           </form>
         </section>
 
         <!-- ======== Registry ======== -->
         <section class="card" id="registry" aria-labelledby="regTitle">
           <div class="card-head">
-            <h2 id="regTitle">سجل المشتكى عليهم — علني</h2>
-            <p>كل الشكاوى المنشورة بتنعرض هون باسم الحساب والمنصة ونوع المخالفة، مشان أي حدا يقدر يعرف مين المُشتكى عليهم وشو الشكاوى ضدهن.</p>
+            <h2 id="regTitle" data-i18n="regTitle">سجل المشتكى عليهم — علني</h2>
+            <p data-i18n="regSub">كل الشكاوى المنشورة بتنعرض هون باسم الحساب والمنصة ونوع المخالفة، مشان أي حدا يقدر يعرف مين المُشتكى عليهم وشو الشكاوى ضدهن.</p>
           </div>
           <div class="toolbar">
             <div class="search-row">
-              <input id="search" type="search" placeholder="دوّر باسم الحساب أو المعرّف…" aria-label="بحث في السجل" />
+              <input id="search" type="search" data-i18n-ph="searchPh" data-i18n-aria="searchAria" placeholder="دوّر باسم الحساب أو المعرّف…" aria-label="بحث في السجل" />
             </div>
-            <div class="chips" id="platformChips" role="group" aria-label="فلترة حسب المنصة">
+            <div class="chips" id="platformChips" role="group" data-i18n-aria="chipsAria" aria-label="فلترة حسب المنصة">
               <button type="button" class="chip-btn active" data-platform="all">الكل</button>
               <button type="button" class="chip-btn" data-platform="تيك توك">تيك توك</button>
               <button type="button" class="chip-btn" data-platform="فيسبوك">فيسبوك</button>
@@ -358,73 +395,276 @@
 
       <div class="sections">
         <section class="card info" aria-labelledby="howTitle">
-          <h2 id="howTitle">كيف بيشتغل الموقع؟</h2>
+          <h2 id="howTitle" data-i18n="howTitle">كيف بيشتغل الموقع؟</h2>
           <ol class="steps">
             <li>
               <span class="num">١</span>
-              <div><b>بتشوف البث المخالف</b><span>انسخ رابط البث أو الحساب وسجّل اسم الحساب والمنصة ونوع المخالفة.</span></div>
+              <div><b data-i18n="step1T">بتشوف البث المخالف</b><span data-i18n="step1D">انسخ رابط البث أو الحساب وسجّل اسم الحساب والمنصة ونوع المخالفة.</span></div>
             </li>
             <li>
               <span class="num">٢</span>
-              <div><b>بتقدّم الشكوى من النموذج</b><span>الشكوى بتنضاف فوراً للسجل العلني المعروض بهالصفحة باسم الحساب المُشتكى عليه، مع الصور والفيديوهات يلي بترفقها كدليل.</span></div>
+              <div><b data-i18n="step2T">بتقدّم الشكوى من النموذج</b><span data-i18n="step2D">الشكوى بتنضاف فوراً للسجل العلني المعروض بهالصفحة باسم الحساب المُشتكى عليه، مع الصور والفيديوهات يلي بترفقها كدليل.</span></div>
             </li>
             <li>
               <span class="num">٣</span>
-              <div><b>الكل بيشوف السجل</b><span>أي زائر بيقدر يعرف مين المُشتكى عليهم، وعدد الشكاوى ضد كل حساب، وحالة كل شكوى.</span></div>
+              <div><b data-i18n="step3T">الكل بيشوف السجل</b><span data-i18n="step3D">أي زائر بيقدر يعرف مين المُشتكى عليهم، وعدد الشكاوى ضد كل حساب، وحالة كل شكوى.</span></div>
             </li>
             <li>
               <span class="num">٤</span>
-              <div><b>المتابعة والإحالة — هدف المقترح</b><span>بالنسخة الرسمية المقترحة، الشكاوى الموثّقة بروابط وأدلة بتتحوّل للجهات المعنية ومنصات النشر لاتخاذ الإجراء.</span></div>
+              <div><b data-i18n="step4T">المتابعة والإحالة — هدف المقترح</b><span data-i18n="step4D">بالنسخة الرسمية المقترحة، الشكاوى الموثّقة بروابط وأدلة بتتحوّل للجهات المعنية ومنصات النشر لاتخاذ الإجراء.</span></div>
             </li>
           </ol>
         </section>
 
       </div>
 
-      <div class="notice" role="note">
+      <div class="notice" role="note" data-i18n-html="noticeHtml">
         <b>تنبيه مهم:</b>
         نشر اسم حساب في هالسجل بيعني إنو وصلت شكوى ضده، ومو حكم نهائي عليه. الشكاوى بتضل «قيد التحقق» لحد ما تتأكد الجهة المعنية من الرابط والدليل. تقديم شكوى كاذبة أو بقصد التشهير بيعرّض المُبلِّغ للمساءلة القانونية، لهيك لا تقدّم شكوى إلا عن شي شفتو بنفسك ومعك رابطه.
       </div>
 
-      <footer>
+      <footer data-i18n="footerText">
         منصة إبلاغ مجتمعية عن البثوث غير الأخلاقية — نموذج أولي معدّ للعرض على الجهات المعنية.
       </footer>
     </div>
 
     <script>
+      // ---------- اللغات ----------
+      var PLATFORMS = ["تيك توك", "فيسبوك", "إنستغرام", "يوتيوب", "منصة أخرى"];
+      var PLATFORM_EN = {
+        "تيك توك": "TikTok", "فيسبوك": "Facebook", "إنستغرام": "Instagram",
+        "يوتيوب": "YouTube", "منصة أخرى": "Other platform"
+      };
+      var TYPES = [
+        "محتوى غير أخلاقي / إيحاءات جنسية",
+        "ألفاظ بذيئة وإساءة لفظية",
+        "استغلال أو تعريض قاصرين للخطر",
+        "ابتزاز أو تشهير بأشخاص",
+        "تحريض على العنف أو الكراهية",
+        "مخالفة أخرى"
+      ];
+      var TYPE_EN = {
+        "محتوى غير أخلاقي / إيحاءات جنسية": "Unethical content / sexual innuendo",
+        "ألفاظ بذيئة وإساءة لفظية": "Profanity and verbal abuse",
+        "استغلال أو تعريض قاصرين للخطر": "Exploitation or endangering minors",
+        "ابتزاز أو تشهير بأشخاص": "Blackmail or defamation of individuals",
+        "تحريض على العنف أو الكراهية": "Incitement to violence or hatred",
+        "مخالفة أخرى": "Other violation"
+      };
+
+      var I18N = {
+        ar: {
+          docTitle: "موقع الإبلاغ عن البثوث غير الأخلاقية",
+          heroTag: "منصة مجتمعية للإبلاغ والمتابعة",
+          heroTitle: "الإبلاغ عن البثوث غير الأخلاقية",
+          heroDesc: "نموذج موقع مقترح لتقديمه للجهات المعنية: أي حدا بيشوف بثّاً مباشراً فيه محتوى غير أخلاقي أو مخالف بيقدر يقدّم شكوى ببيانات الحساب والمنصة ونوع المخالفة، والشكوى بتنعرض علناً في سجل المشتكى عليهم حتى يعرفها الجميع.",
+          btnSubmit: "قدّم شكوى الآن",
+          btnRegistry: "سجل المشتكى عليهم",
+          statsAria: "إحصائيات الشكاوى",
+          statTotal: "إجمالي الشكاوى المعروضة",
+          statAccounts: "حساب مُشتكى عليه",
+          statPending: "قيد التحقق والمتابعة",
+          statDone: "شكاوى بحالة «مُحالة» بالسجل",
+          formTitle: "تقديم شكوى جديدة",
+          formSub: "عبّي البيانات متل ما شفتها بالبث، وكل ما كانت أدقّ كانت الشكوى أقوى.",
+          fAccount: "اسم الحساب المُشتكى عليه <span class=\"req\">*</span>",
+          accountPh: "مثال: اسم صفحة البث أو اسم المستخدم",
+          errAccount: "لازم تكتب اسم الحساب المُشتكى عليه.",
+          fHandle: "معرّف الحساب (يوزر) <span class=\"opt\">— اختياري</span>",
+          fPlatform: "المنصة <span class=\"req\">*</span>",
+          platformPh: "— اختر المنصة —",
+          errPlatform: "اختر المنصة يلي صار عليها البث.",
+          fLink: "رابط البث أو رابط الحساب <span class=\"req\">*</span>",
+          linkHint: "الرابط هو الدليل الأساسي — انسخه من البث نفسه إذا فيك.",
+          errLink: "حط رابط البث أو الحساب (بيبدأ بـ https://).",
+          fType: "نوع المخالفة <span class=\"req\">*</span>",
+          typePh: "— اختر نوع المخالفة —",
+          errType: "اختر نوع المخالفة.",
+          fDesc: "وصف المخالفة <span class=\"req\">*</span>",
+          descPh: "شو صار بالبث بالضبط؟ إيمت شفتو؟ وشو المحتوى المخالف يلي انعرض؟",
+          errDesc: "اكتب وصفاً قصيراً وواضحاً للمخالفة (١٠ أحرف على الأقل).",
+          fFiles: "إرفاق صور أو فيديوهات كدليل <span class=\"opt\">— اختياري</span>",
+          uploadBtn: "ارفع صور أو فيديوهات",
+          uploadHint: "لقطات شاشة أو مقاطع قصيرة من البث بتقوّي الشكوى — لحد ٦ ملفات، وبتنعرض مع الشكوى بالسجل العلني.",
+          fWhen: "تاريخ ووقت البث <span class=\"opt\">— اختياري</span>",
+          fReporter: "اسمك كمُبلِّغ <span class=\"opt\">— اختياري، بيظهر «مُبلِّغ مجهول» إذا تركتو فاضي</span>",
+          reporterPh: "اسمك أو اتركه فاضي",
+          truthText: "أقرّ إنو المعلومات يلي كتبتها صحيحة حسب ما شفتو بنفسي، وبعرف إنو الشكوى الكاذبة أو التشهير بدون دليل بيعرّض صاحبها للمساءلة.",
+          errTruth: "لازم تأكّد صحة المعلومات قبل الإرسال.",
+          submitBtn: "نشر الشكوى في السجل العلني",
+          regTitle: "سجل المشتكى عليهم — علني",
+          regSub: "كل الشكاوى المنشورة بتنعرض هون باسم الحساب والمنصة ونوع المخالفة، مشان أي حدا يقدر يعرف مين المُشتكى عليهم وشو الشكاوى ضدهن.",
+          searchPh: "دوّر باسم الحساب أو المعرّف…",
+          searchAria: "بحث في السجل",
+          chipsAria: "فلترة حسب المنصة",
+          chipAll: "الكل",
+          chipOther: "أخرى",
+          howTitle: "كيف بيشتغل الموقع؟",
+          step1T: "بتشوف البث المخالف",
+          step1D: "انسخ رابط البث أو الحساب وسجّل اسم الحساب والمنصة ونوع المخالفة.",
+          step2T: "بتقدّم الشكوى من النموذج",
+          step2D: "الشكوى بتنضاف فوراً للسجل العلني المعروض بهالصفحة باسم الحساب المُشتكى عليه، مع الصور والفيديوهات يلي بترفقها كدليل.",
+          step3T: "الكل بيشوف السجل",
+          step3D: "أي زائر بيقدر يعرف مين المُشتكى عليهم، وعدد الشكاوى ضد كل حساب، وحالة كل شكوى.",
+          step4T: "المتابعة والإحالة — هدف المقترح",
+          step4D: "بالنسخة الرسمية المقترحة، الشكاوى الموثّقة بروابط وأدلة بتتحوّل للجهات المعنية ومنصات النشر لاتخاذ الإجراء.",
+          noticeHtml: "<b>تنبيه مهم:</b> نشر اسم حساب في هالسجل بيعني إنو وصلت شكوى ضده، ومو حكم نهائي عليه. الشكاوى بتضل «قيد التحقق» لحد ما تتأكد الجهة المعنية من الرابط والدليل. تقديم شكوى كاذبة أو بقصد التشهير بيعرّض المُبلِّغ للمساءلة القانونية، لهيك لا تقدّم شكوى إلا عن شي شفتو بنفسك ومعك رابطه.",
+          footerText: "منصة إبلاغ مجتمعية عن البثوث غير الأخلاقية — نموذج أولي معدّ للعرض على الجهات المعنية.",
+          statusPending: "قيد التحقق",
+          statusDone: "أُحيلت للجهة المعنية",
+          demoBadge: "مثال توضيحي",
+          evidenceLabel: "أدلة مرفقة",
+          evidenceAlt: "صورة مرفقة كدليل على المخالفة",
+          linkLabel: "رابط الدليل:",
+          whenLabel: "وقت البث:",
+          reporterLabel: "المُبلِّغ:",
+          anonymous: "مُبلِّغ مجهول",
+          emptyHtml: "ما في شكاوى مطابقة للبحث أو الفلتر الحالي.<br>جرّب كلمة تانية أو اختر «الكل».",
+          removeBtn: "حذف",
+          kindVideo: "فيديو",
+          kindImage: "صورة",
+          unitByte: "بايت",
+          unitKb: "كيلوبايت",
+          unitMb: "ميغابايت",
+          attachErrType: "في ملفات ما انضافت لأنها مو صور أو فيديوهات.",
+          attachErrMax: "الحد الأقصى ٦ ملفات مرفقة للشكوى الوحدة.",
+          themeToDark: "الوضع الليلي",
+          themeToLight: "الوضع النهاري",
+          themeAria: "تبديل الوضع الليلي",
+          langAria: "Switch language",
+          langBtnLabel: "English",
+          stepNums: ["١", "٢", "٣", "٤"]
+        },
+        en: {
+          docTitle: "Report Unethical Live Streams",
+          heroTag: "A community platform for reporting & follow-up",
+          heroTitle: "Report Unethical Live Streams",
+          heroDesc: "A proposed website to present to the relevant authorities: anyone who sees a live stream containing unethical or violating content can file a complaint with the account details, platform, and violation type — and the complaint is displayed publicly in the registry of reported accounts for everyone to see.",
+          btnSubmit: "File a complaint now",
+          btnRegistry: "Registry of reported accounts",
+          statsAria: "Complaint statistics",
+          statTotal: "Total complaints shown",
+          statAccounts: "Reported accounts",
+          statPending: "Under verification & follow-up",
+          statDone: "Complaints marked “Referred”",
+          formTitle: "File a new complaint",
+          formSub: "Fill in the details exactly as you saw them in the stream — the more accurate they are, the stronger the complaint.",
+          fAccount: "Name of the reported account <span class=\"req\">*</span>",
+          accountPh: "E.g. the stream page name or username",
+          errAccount: "You must enter the name of the reported account.",
+          fHandle: "Account handle (username) <span class=\"opt\">— optional</span>",
+          fPlatform: "Platform <span class=\"req\">*</span>",
+          platformPh: "— Choose the platform —",
+          errPlatform: "Choose the platform where the stream took place.",
+          fLink: "Stream or account link <span class=\"req\">*</span>",
+          linkHint: "The link is the key evidence — copy it from the stream itself if you can.",
+          errLink: "Enter the stream or account link (starting with https://).",
+          fType: "Violation type <span class=\"req\">*</span>",
+          typePh: "— Choose the violation type —",
+          errType: "Choose the violation type.",
+          fDesc: "Description of the violation <span class=\"req\">*</span>",
+          descPh: "What exactly happened in the stream? When did you see it? What violating content was shown?",
+          errDesc: "Write a short, clear description of the violation (at least 10 characters).",
+          fFiles: "Attach photos or videos as evidence <span class=\"opt\">— optional</span>",
+          uploadBtn: "Upload photos or videos",
+          uploadHint: "Screenshots or short clips from the stream strengthen your complaint — up to 6 files, shown with the complaint in the public registry.",
+          fWhen: "Stream date & time <span class=\"opt\">— optional</span>",
+          fReporter: "Your name as reporter <span class=\"opt\">— optional; “Anonymous reporter” is shown if left empty</span>",
+          reporterPh: "Your name, or leave it empty",
+          truthText: "I confirm that the information I provided is true to what I personally saw, and I understand that a false complaint or defamation without evidence exposes its author to liability.",
+          errTruth: "You must confirm the information is correct before submitting.",
+          submitBtn: "Publish the complaint in the public registry",
+          regTitle: "Registry of reported accounts — public",
+          regSub: "Every published complaint is shown here with the account name, platform, and violation type, so anyone can see who has been reported and what the complaints against them are.",
+          searchPh: "Search by account name or handle…",
+          searchAria: "Search the registry",
+          chipsAria: "Filter by platform",
+          chipAll: "All",
+          chipOther: "Other",
+          howTitle: "How does the site work?",
+          step1T: "You see the violating stream",
+          step1D: "Copy the stream or account link and note the account name, platform, and violation type.",
+          step2T: "You file the complaint from the form",
+          step2D: "The complaint is added immediately to the public registry shown on this page under the reported account's name, along with any photos or videos you attach as evidence.",
+          step3T: "Everyone can see the registry",
+          step3D: "Any visitor can see who has been reported, how many complaints each account has, and the status of each complaint.",
+          step4T: "Follow-up & referral — the proposal's goal",
+          step4D: "In the proposed official version, complaints documented with links and evidence are referred to the relevant authorities and publishing platforms so action can be taken.",
+          noticeHtml: "<b>Important notice:</b> Publishing an account's name in this registry means a complaint was filed against it — it is not a final verdict. Complaints remain “under verification” until the relevant authority confirms the link and the evidence. Filing a false complaint or one intended as defamation exposes the reporter to legal liability, so only report something you personally saw and have the link for.",
+          footerText: "A community reporting platform for unethical live streams — a prototype prepared for presentation to the relevant authorities.",
+          statusPending: "Under verification",
+          statusDone: "Referred to the authority",
+          demoBadge: "Illustrative example",
+          evidenceLabel: "Attached evidence",
+          evidenceAlt: "Photo attached as evidence of the violation",
+          linkLabel: "Evidence link:",
+          whenLabel: "Stream time:",
+          reporterLabel: "Reporter:",
+          anonymous: "Anonymous reporter",
+          emptyHtml: "No complaints match the current search or filter.<br>Try another word or choose “All”.",
+          removeBtn: "Remove",
+          kindVideo: "Video",
+          kindImage: "Photo",
+          unitByte: "bytes",
+          unitKb: "KB",
+          unitMb: "MB",
+          attachErrType: "Some files were not added because they are not photos or videos.",
+          attachErrMax: "A maximum of 6 files can be attached to a single complaint.",
+          themeToDark: "Dark mode",
+          themeToLight: "Light mode",
+          themeAria: "Toggle dark mode",
+          langAria: "تغيير اللغة",
+          langBtnLabel: "العربية",
+          stepNums: ["1", "2", "3", "4"]
+        }
+      };
+
+      var lang = "ar";
+      function t(key){ return I18N[lang][key]; }
+      function platformName(p){ return lang === "en" ? (PLATFORM_EN[p] || p) : p; }
+      function typeName(ty){ return lang === "en" ? (TYPE_EN[ty] || ty) : ty; }
+
       // شكاوى توضيحية بأسماء حسابات وهمية، لعرض شكل السجل العلني فقط.
       var complaints = [
         {
-          account: "حساب بث تجريبي ١", handle: "@demo_stream_1", platform: "تيك توك",
+          account: "حساب بث تجريبي ١", accountEn: "Demo stream account 1",
+          handle: "@demo_stream_1", platform: "تيك توك",
           link: "https://www.tiktok.com/@demo_stream_1",
           type: "محتوى غير أخلاقي / إيحاءات جنسية",
           desc: "بث مباشر فيه إيحاءات وكلام غير لائق قدّام جمهور من كل الأعمار، وتكرّر أكتر من مرة بنفس الأسبوع.",
-          when: "٢٠٢٦/١١/١٧ — ١٠:٣٠ مساءً", reporter: "مُبلِّغ مجهول",
-          status: "pending", demo: true
+          descEn: "A live stream with innuendo and inappropriate language in front of an audience of all ages, repeated several times in the same week.",
+          when: "٢٠٢٦/١١/١٧ — ١٠:٣٠ مساءً", whenEn: "2026/11/17 — 10:30 PM",
+          reporter: "", status: "pending", demo: true
         },
         {
-          account: "حساب بث تجريبي ٢", handle: "@demo_stream_2", platform: "فيسبوك",
+          account: "حساب بث تجريبي ٢", accountEn: "Demo stream account 2",
+          handle: "@demo_stream_2", platform: "فيسبوك",
           link: "https://www.facebook.com/demo_stream_2",
           type: "ألفاظ بذيئة وإساءة لفظية",
           desc: "بث فيه شتائم وألفاظ بذيئة موجّهة للمتابعين، ورفض صاحب البث إيقافه رغم التنبيه بالتعليقات.",
-          when: "٢٠٢٦/١١/١٥ — ٩:٠٠ مساءً", reporter: "مُبلِّغ مجهول",
-          status: "done", demo: true
+          descEn: "A stream full of insults and profanity directed at followers; the streamer refused to stop despite warnings in the comments.",
+          when: "٢٠٢٦/١١/١٥ — ٩:٠٠ مساءً", whenEn: "2026/11/15 — 9:00 PM",
+          reporter: "", status: "done", demo: true
         },
         {
-          account: "حساب بث تجريبي ٣", handle: "@demo_stream_3", platform: "إنستغرام",
+          account: "حساب بث تجريبي ٣", accountEn: "Demo stream account 3",
+          handle: "@demo_stream_3", platform: "إنستغرام",
           link: "https://www.instagram.com/demo_stream_3",
           type: "ابتزاز أو تشهير بأشخاص",
           desc: "صاحب البث هدّد بنشر صور خاصة لأشخاص وطلب مبالغ مالية مقابل عدم النشر، والبث موثّق بالرابط.",
-          when: "٢٠٢٦/١١/١٢ — ١١:١٥ مساءً", reporter: "مُبلِّغ مجهول",
-          status: "pending", demo: true
+          descEn: "The streamer threatened to publish people's private photos and demanded money in exchange for not publishing them; the stream is documented in the link.",
+          when: "٢٠٢٦/١١/١٢ — ١١:١٥ مساءً", whenEn: "2026/11/12 — 11:15 PM",
+          reporter: "", status: "pending", demo: true
         },
         {
-          account: "حساب بث تجريبي ٤", handle: "@demo_stream_4", platform: "يوتيوب",
+          account: "حساب بث تجريبي ٤", accountEn: "Demo stream account 4",
+          handle: "@demo_stream_4", platform: "يوتيوب",
           link: "https://www.youtube.com/@demo_stream_4",
           type: "تحريض على العنف أو الكراهية",
           desc: "بث مباشر فيه تحريض صريح وخطاب كراهية ضد فئة من الناس، مع دعوات للعنف بالتعليقات المثبّتة.",
-          when: "٢٠٢٦/١١/١٠ — ٨:٤٥ مساءً", reporter: "مُبلِّغ مجهول",
-          status: "done", demo: true
+          descEn: "A live stream with explicit incitement and hate speech against a group of people, with calls to violence in the pinned comments.",
+          when: "٢٠٢٦/١١/١٠ — ٨:٤٥ مساءً", whenEn: "2026/11/10 — 8:45 PM",
+          reporter: "", status: "done", demo: true
         }
       ];
 
@@ -432,6 +672,7 @@
       var listEl = document.getElementById("complaintList");
       var metaEl = document.getElementById("listMeta");
       var searchEl = document.getElementById("search");
+      var lastSuccess = null;
 
       function esc(s){
         return String(s == null ? "" : s)
@@ -439,22 +680,26 @@
           .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
       }
 
+      function dispAccount(c){ return (lang === "en" && c.accountEn) ? c.accountEn : c.account; }
+      function dispDesc(c){ return (lang === "en" && c.descEn) ? c.descEn : c.desc; }
+      function dispWhen(c){ return (lang === "en" && c.whenEn) ? c.whenEn : c.when; }
+
       function mediaHtml(c){
         if (!c.attachments || !c.attachments.length) return "";
         var items = c.attachments.map(function(a){
           if (a.type && a.type.indexOf("video") === 0){
             return '<video src="' + a.url + '" controls preload="metadata" playsinline></video>';
           }
-          return '<img src="' + a.url + '" alt="صورة مرفقة كدليل على المخالفة" loading="lazy" />';
+          return '<img src="' + a.url + '" alt="' + esc(t("evidenceAlt")) + '" loading="lazy" />';
         }).join("");
-        return '<div class="c-media-label">أدلة مرفقة (' + c.attachments.length + '):</div>' +
+        return '<div class="c-media-label">' + esc(t("evidenceLabel")) + ' (' + c.attachments.length + '):</div>' +
                '<div class="c-media">' + items + '</div>';
       }
 
       function statusBadge(st){
         return st === "done"
-          ? '<span class="badge status-done">أُحيلت للجهة المعنية</span>'
-          : '<span class="badge status-pending">قيد التحقق</span>';
+          ? '<span class="badge status-done">' + esc(t("statusDone")) + '</span>'
+          : '<span class="badge status-pending">' + esc(t("statusPending")) + '</span>';
       }
 
       function render(){
@@ -462,39 +707,42 @@
         var shown = complaints.filter(function(c){
           var okP = activePlatform === "all" || c.platform === activePlatform;
           var okQ = !q || c.account.toLowerCase().indexOf(q) > -1 ||
+                    dispAccount(c).toLowerCase().indexOf(q) > -1 ||
                     (c.handle || "").toLowerCase().indexOf(q) > -1;
           return okP && okQ;
         });
 
         if (!shown.length){
-          listEl.innerHTML = '<div class="empty">ما في شكاوى مطابقة للبحث أو الفلتر الحالي.<br>جرّب كلمة تانية أو اختر «الكل».</div>';
+          listEl.innerHTML = '<div class="empty">' + t("emptyHtml") + '</div>';
         } else {
-          listEl.innerHTML = shown.map(function(c, i){
+          listEl.innerHTML = shown.map(function(c){
             return '<article class="complaint' + (c.fresh ? ' new' : '') + '">' +
               '<div class="c-top">' +
-                '<div class="c-account">' + esc(c.account) +
+                '<div class="c-account">' + esc(dispAccount(c)) +
                   (c.handle ? ' <span class="handle">' + esc(c.handle) + '</span>' : '') +
                 '</div>' +
                 '<div class="badges">' + statusBadge(c.status) +
-                  (c.demo ? '<span class="badge demo">مثال توضيحي</span>' : '') +
+                  (c.demo ? '<span class="badge demo">' + esc(t("demoBadge")) + '</span>' : '') +
                 '</div>' +
               '</div>' +
               '<div class="badges" style="margin-top:8px">' +
-                '<span class="badge platform">' + esc(c.platform) + '</span>' +
-                '<span class="badge violation">' + esc(c.type) + '</span>' +
+                '<span class="badge platform">' + esc(platformName(c.platform)) + '</span>' +
+                '<span class="badge violation">' + esc(typeName(c.type)) + '</span>' +
               '</div>' +
-              '<p class="c-desc">' + esc(c.desc) + '</p>' +
+              '<p class="c-desc">' + esc(dispDesc(c)) + '</p>' +
               mediaHtml(c) +
               '<div class="c-foot">' +
-                '<span>رابط الدليل: <a href="' + esc(c.link) + '" target="_blank" rel="noopener noreferrer">' + esc(c.link) + '</a></span>' +
-                (c.when ? '<span>وقت البث: ' + esc(c.when) + '</span>' : '') +
-                '<span>المُبلِّغ: ' + esc(c.reporter || "مُبلِّغ مجهول") + '</span>' +
+                '<span>' + esc(t("linkLabel")) + ' <a href="' + esc(c.link) + '" target="_blank" rel="noopener noreferrer">' + esc(c.link) + '</a></span>' +
+                (dispWhen(c) ? '<span>' + esc(t("whenLabel")) + ' ' + esc(dispWhen(c)) + '</span>' : '') +
+                '<span>' + esc(t("reporterLabel")) + ' ' + esc(c.reporter || t("anonymous")) + '</span>' +
               '</div>' +
             '</article>';
           }).join("");
         }
 
-        metaEl.textContent = "عم ينعرض " + shown.length + " من أصل " + complaints.length + " شكوى.";
+        metaEl.textContent = lang === "en"
+          ? "Showing " + shown.length + " of " + complaints.length + " complaints."
+          : "عم ينعرض " + shown.length + " من أصل " + complaints.length + " شكوى.";
 
         // إحصائيات
         var accounts = {};
@@ -522,16 +770,18 @@
       var fileInput = document.getElementById("evidence");
       var attachList = document.getElementById("attachList");
       var attachErr = document.getElementById("attachErr");
+      var attachErrKey = "";
 
       function fmtSize(bytes){
-        if (bytes < 1024) return bytes + " بايت";
-        if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + " كيلوبايت";
-        return (bytes / (1024 * 1024)).toFixed(1) + " ميغابايت";
+        if (bytes < 1024) return bytes + " " + t("unitByte");
+        if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + " " + t("unitKb");
+        return (bytes / (1024 * 1024)).toFixed(1) + " " + t("unitMb");
       }
 
-      function showAttachErr(msg){
-        attachErr.textContent = msg || "";
-        attachErr.classList.toggle("show", !!msg);
+      function showAttachErr(key){
+        attachErrKey = key || "";
+        attachErr.textContent = key ? t(key) : "";
+        attachErr.classList.toggle("show", !!key);
       }
 
       function renderAttach(){
@@ -543,8 +793,8 @@
             : '<img src="' + a.url + '" alt="" />';
           return '<div class="attach-item">' + thumb +
             '<div class="attach-meta"><div class="attach-name">' + esc(a.name) + '</div>' +
-            '<div class="attach-size">' + (isVideo ? "فيديو" : "صورة") + " — " + fmtSize(a.size) + '</div></div>' +
-            '<button type="button" class="attach-remove" data-remove="' + i + '">حذف</button></div>';
+            '<div class="attach-size">' + (isVideo ? t("kindVideo") : t("kindImage")) + " — " + fmtSize(a.size) + '</div></div>' +
+            '<button type="button" class="attach-remove" data-remove="' + i + '">' + esc(t("removeBtn")) + '</button></div>';
         }).join("");
       }
 
@@ -556,11 +806,11 @@
         for (var i = 0; i < files.length; i++){
           var f = files[i];
           if (f.type.indexOf("image/") !== 0 && f.type.indexOf("video/") !== 0){
-            showAttachErr("في ملفات ما انضافت لأنها مو صور أو فيديوهات.");
+            showAttachErr("attachErrType");
             continue;
           }
           if (pendingFiles.length >= MAX_FILES){
-            showAttachErr("الحد الأقصى ٦ ملفات مرفقة للشكوى الوحدة.");
+            showAttachErr("attachErrMax");
             break;
           }
           pendingFiles.push({ name: f.name, type: f.type, size: f.size, url: URL.createObjectURL(f) });
@@ -582,6 +832,18 @@
       function setInvalid(id, bad){
         document.getElementById(id).classList.toggle("invalid", bad);
         return !bad;
+      }
+
+      function successText(){
+        if (!lastSuccess) return "";
+        if (lang === "en"){
+          return "Your complaint was received and published in the public registry under the name “" + lastSuccess.account + "”" +
+            (lastSuccess.attCount ? " with " + lastSuccess.attCount + " attached evidence file" + (lastSuccess.attCount > 1 ? "s" : "") : "") +
+            " — its status now: under verification. Thank you for your contribution.";
+        }
+        return "تم استلام شكواك ونشرها في السجل العلني باسم «" + lastSuccess.account + "»" +
+          (lastSuccess.attCount ? " مع " + lastSuccess.attCount + " ملف مرفق كدليل" : "") +
+          " — حالتها هلأ: قيد التحقق. شكراً لمساهمتك.";
       }
 
       document.getElementById("complaintForm").addEventListener("submit", function(e){
@@ -609,11 +871,12 @@
           return;
         }
 
-        var whenText = "";
+        var whenText = "", whenTextEn = "";
         if (whenRaw){
           var d = new Date(whenRaw);
           if (!isNaN(d.getTime())){
             whenText = d.toLocaleDateString("ar-EG") + " — " + d.toLocaleTimeString("ar-EG", { hour: "numeric", minute: "2-digit" });
+            whenTextEn = d.toLocaleDateString("en-US") + " — " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
           }
         }
         if (handle && handle.charAt(0) !== "@") handle = "@" + handle;
@@ -621,8 +884,8 @@
         complaints.forEach(function(c){ c.fresh = false; });
         complaints.unshift({
           account: account, handle: handle, platform: platform, link: link,
-          type: type, desc: desc, when: whenText,
-          reporter: reporter || "مُبلِّغ مجهول",
+          type: type, desc: desc, when: whenText, whenEn: whenTextEn,
+          reporter: reporter,
           attachments: pendingFiles.slice(),
           status: "pending", demo: false, fresh: true
         });
@@ -633,11 +896,9 @@
         searchEl.value = "";
         render();
 
-        var attCount = complaints[0].attachments.length;
+        lastSuccess = { account: account, attCount: complaints[0].attachments.length };
         var okBox = document.getElementById("formOk");
-        okBox.textContent = "تم استلام شكواك ونشرها في السجل العلني باسم «" + account + "»" +
-          (attCount ? " مع " + attCount + " ملف مرفق كدليل" : "") +
-          " — حالتها هلأ: قيد التحقق. شكراً لمساهمتك.";
+        okBox.textContent = successText();
         okBox.classList.add("show");
         this.reset();
         pendingFiles = [];
@@ -646,6 +907,90 @@
         document.getElementById("registry").scrollIntoView({ behavior: "smooth", block: "start" });
       });
 
+      // ---------- تبديل اللغة ----------
+      function rebuildSelect(sel, items, placeholderKey){
+        var current = sel.value;
+        var nameFn = sel.id === "platform" ? platformName : typeName;
+        var html = '<option value="">' + esc(t(placeholderKey)) + '</option>';
+        items.forEach(function(v){
+          html += '<option value="' + esc(v) + '"' + (v === current ? ' selected' : '') + '>' +
+            esc(nameFn(v)) + '</option>';
+        });
+        sel.innerHTML = html;
+        sel.value = current;
+      }
+
+      function applyLang(newLang){
+        lang = newLang;
+        var root = document.documentElement;
+        root.lang = lang === "ar" ? "ar" : "en";
+        root.dir = lang === "ar" ? "rtl" : "ltr";
+        document.title = t("docTitle");
+
+        var els, i, key;
+        els = document.querySelectorAll("[data-i18n]");
+        for (i = 0; i < els.length; i++){ key = els[i].getAttribute("data-i18n"); if (I18N[lang][key] != null) els[i].textContent = I18N[lang][key]; }
+        els = document.querySelectorAll("[data-i18n-html]");
+        for (i = 0; i < els.length; i++){ key = els[i].getAttribute("data-i18n-html"); if (I18N[lang][key] != null) els[i].innerHTML = I18N[lang][key]; }
+        els = document.querySelectorAll("[data-i18n-ph]");
+        for (i = 0; i < els.length; i++){ key = els[i].getAttribute("data-i18n-ph"); if (I18N[lang][key] != null) els[i].setAttribute("placeholder", I18N[lang][key]); }
+        els = document.querySelectorAll("[data-i18n-aria]");
+        for (i = 0; i < els.length; i++){ key = els[i].getAttribute("data-i18n-aria"); if (I18N[lang][key] != null) els[i].setAttribute("aria-label", I18N[lang][key]); }
+
+        rebuildSelect(document.getElementById("platform"), PLATFORMS, "platformPh");
+        rebuildSelect(document.getElementById("type"), TYPES, "typePh");
+
+        var chips = document.querySelectorAll("#platformChips .chip-btn");
+        for (i = 0; i < chips.length; i++){
+          var p = chips[i].getAttribute("data-platform");
+          chips[i].textContent = p === "all" ? t("chipAll") : (p === "منصة أخرى" ? t("chipOther") : platformName(p));
+        }
+
+        var nums = document.querySelectorAll(".steps .num");
+        for (i = 0; i < nums.length && i < 4; i++) nums[i].textContent = t("stepNums")[i];
+
+        document.getElementById("langBtnText").textContent = t("langBtnLabel");
+        document.getElementById("langBtn").setAttribute("aria-label", t("langAria"));
+
+        updateThemeBtn();
+        if (attachErrKey) showAttachErr(attachErrKey);
+        if (lastSuccess){
+          var okBox = document.getElementById("formOk");
+          if (okBox.classList.contains("show")) okBox.textContent = successText();
+        }
+        renderAttach();
+        render();
+      }
+
+      document.getElementById("langBtn").addEventListener("click", function(){
+        applyLang(lang === "ar" ? "en" : "ar");
+      });
+
+      // ---------- الوضع الليلي ----------
+      var MOON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+      var SUN = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/></svg>';
+
+      function effectiveTheme(){
+        var dt = document.documentElement.getAttribute("data-theme");
+        if (dt === "dark" || dt === "light") return dt;
+        return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+
+      function updateThemeBtn(){
+        var btn = document.getElementById("themeBtn");
+        var dark = effectiveTheme() === "dark";
+        btn.innerHTML = (dark ? SUN : MOON) + "<span>" + esc(dark ? t("themeToLight") : t("themeToDark")) + "</span>";
+        btn.setAttribute("aria-label", t("themeAria"));
+      }
+
+      document.getElementById("themeBtn").addEventListener("click", function(){
+        var next = effectiveTheme() === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        document.documentElement.style.colorScheme = next;
+        updateThemeBtn();
+      });
+
+      updateThemeBtn();
       render();
     </script>
   </body>
