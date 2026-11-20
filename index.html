@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>موقع الإبلاغ عن البثوث غير الأخلاقية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#eef1f4;
+        --surface:#ffffff;
+        --surface-2:#f6f8fa;
+        --ink:#16202e;
+        --muted:#5a6a7d;
+        --line:#d8dfe7;
+        --navy:#173a5e;
+        --navy-ink:#ffffff;
+        --red:#b42318;
+        --red-soft:#fdecea;
+        --amber:#9a6a00;
+        --amber-soft:#fdf3d7;
+        --green:#1d7a4f;
+        --green-soft:#e3f3ea;
+        --chip:#e8eef4;
+        --shadow:0 10px 28px rgba(22,32,46,.08);
+        --radius:14px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#0f141b;
+          --surface:#182130;
+          --surface-2:#1e2939;
+          --ink:#edf2f7;
+          --muted:#9fb0c3;
+          --line:#2c3a4e;
+          --navy:#2c5a8a;
+          --red:#e0655c;
+          --red-soft:#3a2321;
+          --amber:#e0b34c;
+          --amber-soft:#38300f;
+          --green:#4cc084;
+          --green-soft:#173528;
+          --chip:#24344a;
+          --shadow:0 10px 28px rgba(0,0,0,.35);
+        }
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{
+        margin:0;background:var(--bg);color:var(--ink);
+        font-family:"Tajawal",system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;
+        line-height:1.7;font-size:16px;
+      }
+      button,[role="button"],select,summary,input:not([type="checkbox"],[type="radio"]){min-height:2.25rem}
+      a{color:var(--navy)}
+      @media (prefers-color-scheme: dark){ a{color:#8fc1f0} }
+
+      .wrap{max-width:1160px;margin:0 auto;padding:0 16px 56px}
+
+      /* ---------- Hero ---------- */
+      .hero{
+        background:var(--navy);color:var(--navy-ink);
+        padding:34px 0 30px;margin-bottom:26px;
+      }
+      .hero .wrap{padding-bottom:0}
+      .hero-tag{
+        display:inline-block;background:rgba(255,255,255,.14);
+        border:1px solid rgba(255,255,255,.3);
+        padding:4px 14px;border-radius:999px;font-size:.85rem;font-weight:700;margin-bottom:14px;
+      }
+      .hero h1{margin:0 0 10px;font-size:clamp(1.7rem,4.5vw,2.6rem);font-weight:900;line-height:1.35}
+      .hero p{margin:0;max-width:720px;font-size:1.05rem;opacity:.92}
+      .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+      .btn{
+        display:inline-flex;align-items:center;justify-content:center;gap:8px;
+        border:0;cursor:pointer;font-family:inherit;font-weight:800;font-size:1rem;
+        padding:10px 22px;border-radius:10px;text-decoration:none;min-height:48px;
+      }
+      .btn-red{background:var(--red);color:#fff}
+      .btn-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.65)}
+      @media (prefers-color-scheme: dark){ .btn-red{color:#fff} }
+
+      .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px}
+      .stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:12px 16px}
+      .stat b{display:block;font-size:1.6rem;font-weight:900;line-height:1.2}
+      .stat span{font-size:.88rem;opacity:.85}
+      @media (max-width:640px){ .stats{grid-template-columns:repeat(2,1fr)} }
+
+      /* ---------- Layout ---------- */
+      .grid{display:grid;grid-template-columns:400px 1fr;gap:22px;align-items:start}
+      @media (max-width:920px){ .grid{grid-template-columns:1fr} }
+
+      .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+      .card-head{padding:18px 20px 0}
+      .card-head h2{margin:0;font-size:1.3rem;font-weight:900}
+      .card-head p{margin:4px 0 0;color:var(--muted);font-size:.93rem}
+
+      /* ---------- Form ---------- */
+      form{padding:16px 20px 20px;display:flex;flex-direction:column;gap:13px}
+      .field label{display:block;font-weight:700;font-size:.93rem;margin-bottom:5px}
+      .field label .req{color:var(--red)}
+      .field label .opt{color:var(--muted);font-weight:500;font-size:.82rem}
+      .field input,.field select,.field textarea{
+        width:100%;font-family:inherit;font-size:1rem;color:var(--ink);
+        background:var(--surface-2);border:1.5px solid var(--line);border-radius:10px;
+        padding:9px 12px;
+      }
+      .field textarea{resize:vertical;min-height:88px}
+      .field input:focus,.field select:focus,.field textarea:focus{
+        outline:none;border-color:var(--navy);background:var(--surface);
+      }
+      .field .hint{font-size:.8rem;color:var(--muted);margin-top:3px}
+      .field .err{display:none;font-size:.83rem;color:var(--red);font-weight:700;margin-top:3px}
+      .field.invalid input,.field.invalid select,.field.invalid textarea{border-color:var(--red)}
+      .field.invalid .err{display:block}
+      .checkline{display:flex;gap:9px;align-items:flex-start;font-size:.9rem;color:var(--muted)}
+      .checkline input{width:20px;height:20px;margin-top:4px;flex:none;accent-color:var(--navy)}
+      .submit-btn{
+        background:var(--red);color:#fff;border:0;border-radius:10px;cursor:pointer;
+        font-family:inherit;font-size:1.05rem;font-weight:900;padding:12px;min-height:52px;width:100%;
+      }
+      .submit-btn:active{transform:scale(.99)}
+      .form-ok{
+        display:none;background:var(--green-soft);color:var(--green);
+        border:1.5px solid var(--green);border-radius:10px;padding:12px 14px;font-weight:700;font-size:.95rem;
+      }
+      .form-ok.show{display:block}
+
+      /* ---------- Registry ---------- */
+      .toolbar{padding:14px 20px 4px;display:flex;flex-direction:column;gap:12px}
+      .search-row{display:flex;gap:10px;flex-wrap:wrap}
+      .search-row input{
+        flex:1;min-width:200px;font-family:inherit;font-size:1rem;color:var(--ink);
+        background:var(--surface-2);border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;
+      }
+      .search-row input:focus{outline:none;border-color:var(--navy)}
+      .chips{display:flex;flex-wrap:wrap;gap:8px}
+      .chip-btn{
+        border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);
+        border-radius:999px;padding:6px 16px;font-family:inherit;font-weight:700;font-size:.9rem;
+        cursor:pointer;min-height:38px;
+      }
+      .chip-btn.active{background:var(--navy);border-color:var(--navy);color:#fff}
+      .list-meta{padding:2px 20px 0;color:var(--muted);font-size:.88rem}
+      .list{padding:12px 20px 20px;display:flex;flex-direction:column;gap:12px}
+      .empty{
+        border:1.5px dashed var(--line);border-radius:12px;padding:28px 16px;text-align:center;color:var(--muted);
+      }
+      .complaint{border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--surface)}
+      .complaint.new{border-color:var(--green)}
+      .c-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+      .c-account{font-weight:900;font-size:1.08rem}
+      .c-account .handle{color:var(--muted);font-weight:500;font-size:.92rem;direction:ltr;unicode-bidi:embed}
+      .badges{display:flex;flex-wrap:wrap;gap:6px}
+      .badge{font-size:.78rem;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--chip);color:var(--ink)}
+      .badge.platform{background:var(--navy);color:#fff}
+      .badge.violation{background:var(--red-soft);color:var(--red)}
+      .badge.status-pending{background:var(--amber-soft);color:var(--amber)}
+      .badge.status-done{background:var(--green-soft);color:var(--green)}
+      .badge.demo{background:transparent;border:1.5px dashed var(--muted);color:var(--muted)}
+      .c-desc{margin:8px 0 0;font-size:.96rem}
+      .c-foot{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;font-size:.85rem;color:var(--muted)}
+      .c-foot a{font-weight:700;word-break:break-all}
+
+      /* ---------- Info sections ---------- */
+      .sections{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:26px}
+      @media (max-width:920px){ .sections{grid-template-columns:1fr} }
+      .info{padding:20px 22px}
+      .info h2{margin:0 0 12px;font-size:1.25rem;font-weight:900}
+      .steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:step}
+      .steps li{display:flex;gap:12px;align-items:flex-start}
+      .steps .num{
+        flex:none;width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;
+        display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;
+      }
+      .steps b{display:block}
+      .steps span{color:var(--muted);font-size:.93rem}
+      .info p{margin:0 0 10px;color:var(--muted);font-size:.96rem}
+      .info p b{color:var(--ink)}
+      .codebox{
+        background:var(--surface-2);border:1.5px solid var(--line);border-radius:10px;
+        padding:12px 14px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;
+        direction:ltr;text-align:left;white-space:pre;overflow-x:auto;color:var(--ink);margin:10px 0;
+      }
+      .gh-steps{margin:0;padding-inline-start:20px;color:var(--muted);font-size:.96rem}
+      .gh-steps li{margin-bottom:7px}
+      .gh-steps b{color:var(--ink)}
+      .notice{
+        margin-top:26px;border:1.5px solid var(--amber);background:var(--amber-soft);
+        border-radius:var(--radius);padding:16px 20px;font-size:.95rem;
+      }
+      .notice b{color:var(--amber)}
+      @media (prefers-color-scheme: dark){ .notice b{color:var(--amber)} }
+      footer{margin-top:30px;text-align:center;color:var(--muted);font-size:.88rem}
+    </style>
+  </head>
+  <body>
+
+    <header class="hero">
+      <div class="wrap">
+        <span class="hero-tag">منصة مجتمعية للإبلاغ والمتابعة</span>
+        <h1>الإبلاغ عن البثوث غير الأخلاقية</h1>
+        <p>نموذج موقع مقترح لتقديمه للجهات المعنية: أي حدا بيشوف بثّاً مباشراً فيه محتوى غير أخلاقي أو مخالف بيقدر يقدّم شكوى ببيانات الحساب والمنصة ونوع المخالفة، والشكوى بتنعرض علناً في سجل المشتكى عليهم حتى يعرفها الجميع.</p>
+        <div class="hero-actions">
+          <a class="btn btn-red" href="#submit">قدّم شكوى الآن</a>
+          <a class="btn btn-ghost" href="#registry">سجل المشتكى عليهم</a>
+        </div>
+        <div class="stats" aria-label="إحصائيات الشكاوى">
+          <div class="stat"><b id="statTotal">0</b><span>إجمالي الشكاوى المعروضة</span></div>
+          <div class="stat"><b id="statAccounts">0</b><span>حساب مُشتكى عليه</span></div>
+          <div class="stat"><b id="statPending">0</b><span>قيد التحقق والمتابعة</span></div>
+          <div class="stat"><b id="statDone">0</b><span>شكاوى بحالة «مُحالة» بالسجل</span></div>
+        </div>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <div class="grid">
+
+        <!-- ======== Form ======== -->
+        <section class="card" id="submit" aria-labelledby="formTitle">
+          <div class="card-head">
+            <h2 id="formTitle">تقديم شكوى جديدة</h2>
+            <p>عبّي البيانات متل ما شفتها بالبث، وكل ما كانت أدقّ كانت الشكوى أقوى.</p>
+          </div>
+          <form id="complaintForm" novalidate>
+            <div class="form-ok" id="formOk" role="status"></div>
+
+            <div class="field" id="f-account">
+              <label for="account">اسم الحساب المُشتكى عليه <span class="req">*</span></label>
+              <input id="account" type="text" placeholder="مثال: اسم صفحة البث أو اسم المستخدم" autocomplete="off" />
+              <div class="err">لازم تكتب اسم الحساب المُشتكى عليه.</div>
+            </div>
+
+            <div class="field" id="f-handle">
+              <label for="handle">معرّف الحساب (يوزر) <span class="opt">— اختياري</span></label>
+              <input id="handle" type="text" placeholder="@username" autocomplete="off" dir="ltr" style="text-align:left" />
+            </div>
+
+            <div class="field" id="f-platform">
+              <label for="platform">المنصة <span class="req">*</span></label>
+              <select id="platform">
+                <option value="">— اختر المنصة —</option>
+                <option>تيك توك</option>
+                <option>فيسبوك</option>
+                <option>إنستغرام</option>
+                <option>يوتيوب</option>
+                <option>منصة أخرى</option>
+              </select>
+              <div class="err">اختر المنصة يلي صار عليها البث.</div>
+            </div>
+
+            <div class="field" id="f-link">
+              <label for="link">رابط البث أو رابط الحساب <span class="req">*</span></label>
+              <input id="link" type="url" placeholder="https://…" dir="ltr" style="text-align:left" autocomplete="off" />
+              <div class="hint">الرابط هو الدليل الأساسي — انسخه من البث نفسه إذا فيك.</div>
+              <div class="err">حط رابط البث أو الحساب (بيبدأ بـ https://).</div>
+            </div>
+
+            <div class="field" id="f-type">
+              <label for="type">نوع المخالفة <span class="req">*</span></label>
+              <select id="type">
+                <option value="">— اختر نوع المخالفة —</option>
+                <option>محتوى غير أخلاقي / إيحاءات جنسية</option>
+                <option>ألفاظ بذيئة وإساءة لفظية</option>
+                <option>استغلال أو تعريض قاصرين للخطر</option>
+                <option>ابتزاز أو تشهير بأشخاص</option>
+                <option>تحريض على العنف أو الكراهية</option>
+                <option>مخالفة أخرى</option>
+              </select>
+              <div class="err">اختر نوع المخالفة.</div>
+            </div>
+
+            <div class="field" id="f-desc">
+              <label for="desc">وصف المخالفة <span class="req">*</span></label>
+              <textarea id="desc" placeholder="شو صار بالبث بالضبط؟ إيمت شفتو؟ وشو المحتوى المخالف يلي انعرض؟"></textarea>
+              <div class="err">اكتب وصفاً قصيراً وواضحاً للمخالفة (١٠ أحرف على الأقل).</div>
+            </div>
+
+            <div class="field">
+              <label for="when">تاريخ ووقت البث <span class="opt">— اختياري</span></label>
+              <input id="when" type="datetime-local" />
+            </div>
+
+            <div class="field">
+              <label for="reporter">اسمك كمُبلِّغ <span class="opt">— اختياري، بيظهر «مُبلِّغ مجهول» إذا تركتو فاضي</span></label>
+              <input id="reporter" type="text" placeholder="اسمك أو اتركه فاضي" autocomplete="name" />
+            </div>
+
+            <label class="checkline">
+              <input type="checkbox" id="truth" />
+              <span>أقرّ إنو المعلومات يلي كتبتها صحيحة حسب ما شفتو بنفسي، وبعرف إنو الشكوى الكاذبة أو التشهير بدون دليل بيعرّض صاحبها للمساءلة.</span>
+            </label>
+            <div class="field" id="f-truth" style="margin-top:-6px">
+              <div class="err">لازم تأكّد صحة المعلومات قبل الإرسال.</div>
+            </div>
+
+            <button class="submit-btn" type="submit">نشر الشكوى في السجل العلني</button>
+          </form>
+        </section>
+
+        <!-- ======== Registry ======== -->
+        <section class="card" id="registry" aria-labelledby="regTitle">
+          <div class="card-head">
+            <h2 id="regTitle">سجل المشتكى عليهم — علني</h2>
+            <p>كل الشكاوى المنشورة بتنعرض هون باسم الحساب والمنصة ونوع المخالفة، مشان أي حدا يقدر يعرف مين المُشتكى عليهم وشو الشكاوى ضدهن.</p>
+          </div>
+          <div class="toolbar">
+            <div class="search-row">
+              <input id="search" type="search" placeholder="دوّر باسم الحساب أو المعرّف…" aria-label="بحث في السجل" />
+            </div>
+            <div class="chips" id="platformChips" role="group" aria-label="فلترة حسب المنصة">
+              <button type="button" class="chip-btn active" data-platform="all">الكل</button>
+              <button type="button" class="chip-btn" data-platform="تيك توك">تيك توك</button>
+              <button type="button" class="chip-btn" data-platform="فيسبوك">فيسبوك</button>
+              <button type="button" class="chip-btn" data-platform="إنستغرام">إنستغرام</button>
+              <button type="button" class="chip-btn" data-platform="يوتيوب">يوتيوب</button>
+              <button type="button" class="chip-btn" data-platform="منصة أخرى">أخرى</button>
+            </div>
+          </div>
+          <p class="list-meta" id="listMeta"></p>
+          <div class="list" id="complaintList"></div>
+        </section>
+      </div>
+
+      <div class="sections">
+        <section class="card info" aria-labelledby="howTitle">
+          <h2 id="howTitle">كيف بيشتغل الموقع؟</h2>
+          <ol class="steps">
+            <li>
+              <span class="num">١</span>
+              <div><b>بتشوف البث المخالف</b><span>انسخ رابط البث أو الحساب وسجّل اسم الحساب والمنصة ونوع المخالفة.</span></div>
+            </li>
+            <li>
+              <span class="num">٢</span>
+              <div><b>بتقدّم الشكوى من النموذج</b><span>الشكوى بتنضاف فوراً للسجل العلني المعروض بهالصفحة باسم الحساب المُشتكى عليه.</span></div>
+            </li>
+            <li>
+              <span class="num">٣</span>
+              <div><b>الكل بيشوف السجل</b><span>أي زائر بيقدر يعرف مين المُشتكى عليهم، وعدد الشكاوى ضد كل حساب، وحالة كل شكوى.</span></div>
+            </li>
+            <li>
+              <span class="num">٤</span>
+              <div><b>المتابعة والإحالة — هدف المقترح</b><span>بالنسخة الرسمية المقترحة، الشكاوى الموثّقة بروابط وأدلة بتتحوّل للجهات المعنية ومنصات النشر لاتخاذ الإجراء.</span></div>
+            </li>
+          </ol>
+        </section>
+
+        <section class="card info" aria-labelledby="ghTitle">
+          <h2 id="ghTitle">نشر الموقع على GitHub Pages</h2>
+          <p>الموقع ملف <b>index.html</b> واحد، وبيشتغل على استضافة GitHub Pages المجانية وبيصير إلو رابط عام بينبعت لأي حدا:</p>
+          <ol class="gh-steps">
+            <li>من حسابك على GitHub اعمل مستودع جديد (<b>New repository</b>) وسمّيه متل <b>report-streams</b> وخليه <b>Public</b>.</li>
+            <li>ارفع ملف <b>index.html</b> للمستودع (<b>Add file ← Upload files</b>).</li>
+            <li>من إعدادات المستودع روح على <b>Settings ← Pages</b> واختر النشر من فرع <b>main</b>.</li>
+            <li>بعد دقائق بيصير موقعك على رابط بهالشكل:</li>
+          </ol>
+          <div class="codebox">https://USERNAME.github.io/report-streams/</div>
+          <p>هي النسخة نسخة عرض تجريبية لتقديم الفكرة: الشكاوى يلي بتنكتب فيها بتنعرض داخل الصفحة مباشرة. النسخة الرسمية المعتمدة من الدولة بتحتاج قاعدة بيانات مركزية ومراجعة للشكاوى قبل اعتمادها نهائياً، وهي خطوة تطوير تالية بعد قبول الفكرة.</p>
+        </section>
+      </div>
+
+      <div class="notice" role="note">
+        <b>تنبيه مهم:</b>
+        نشر اسم حساب في هالسجل بيعني إنو وصلت شكوى ضده، ومو حكم نهائي عليه. الشكاوى بتضل «قيد التحقق» لحد ما تتأكد الجهة المعنية من الرابط والدليل. تقديم شكوى كاذبة أو بقصد التشهير بيعرّض المُبلِّغ للمساءلة القانونية، لهيك لا تقدّم شكوى إلا عن شي شفتو بنفسك ومعك رابطه.
+      </div>
+
+      <footer>
+        منصة إبلاغ مجتمعية عن البثوث غير الأخلاقية — نموذج أولي معدّ للعرض على الجهات المعنية.
+      </footer>
+    </div>
+
+    <script>
+      // شكاوى توضيحية بأسماء حسابات وهمية، لعرض شكل السجل العلني فقط.
+      var complaints = [
+        {
+          account: "حساب بث تجريبي ١", handle: "@demo_stream_1", platform: "تيك توك",
+          link: "https://www.tiktok.com/@demo_stream_1",
+          type: "محتوى غير أخلاقي / إيحاءات جنسية",
+          desc: "بث مباشر فيه إيحاءات وكلام غير لائق قدّام جمهور من كل الأعمار، وتكرّر أكتر من مرة بنفس الأسبوع.",
+          when: "٢٠٢٦/١١/١٧ — ١٠:٣٠ مساءً", reporter: "مُبلِّغ مجهول",
+          status: "pending", demo: true
+        },
+        {
+          account: "حساب بث تجريبي ٢", handle: "@demo_stream_2", platform: "فيسبوك",
+          link: "https://www.facebook.com/demo_stream_2",
+          type: "ألفاظ بذيئة وإساءة لفظية",
+          desc: "بث فيه شتائم وألفاظ بذيئة موجّهة للمتابعين، ورفض صاحب البث إيقافه رغم التنبيه بالتعليقات.",
+          when: "٢٠٢٦/١١/١٥ — ٩:٠٠ مساءً", reporter: "مُبلِّغ مجهول",
+          status: "done", demo: true
+        },
+        {
+          account: "حساب بث تجريبي ٣", handle: "@demo_stream_3", platform: "إنستغرام",
+          link: "https://www.instagram.com/demo_stream_3",
+          type: "ابتزاز أو تشهير بأشخاص",
+          desc: "صاحب البث هدّد بنشر صور خاصة لأشخاص وطلب مبالغ مالية مقابل عدم النشر، والبث موثّق بالرابط.",
+          when: "٢٠٢٦/١١/١٢ — ١١:١٥ مساءً", reporter: "مُبلِّغ مجهول",
+          status: "pending", demo: true
+        },
+        {
+          account: "حساب بث تجريبي ٤", handle: "@demo_stream_4", platform: "يوتيوب",
+          link: "https://www.youtube.com/@demo_stream_4",
+          type: "تحريض على العنف أو الكراهية",
+          desc: "بث مباشر فيه تحريض صريح وخطاب كراهية ضد فئة من الناس، مع دعوات للعنف بالتعليقات المثبّتة.",
+          when: "٢٠٢٦/١١/١٠ — ٨:٤٥ مساءً", reporter: "مُبلِّغ مجهول",
+          status: "done", demo: true
+        }
+      ];
+
+      var activePlatform = "all";
+      var listEl = document.getElementById("complaintList");
+      var metaEl = document.getElementById("listMeta");
+      var searchEl = document.getElementById("search");
+
+      function esc(s){
+        return String(s == null ? "" : s)
+          .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+          .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+      }
+
+      function statusBadge(st){
+        return st === "done"
+          ? '<span class="badge status-done">أُحيلت للجهة المعنية</span>'
+          : '<span class="badge status-pending">قيد التحقق</span>';
+      }
+
+      function render(){
+        var q = searchEl.value.trim().toLowerCase();
+        var shown = complaints.filter(function(c){
+          var okP = activePlatform === "all" || c.platform === activePlatform;
+          var okQ = !q || c.account.toLowerCase().indexOf(q) > -1 ||
+                    (c.handle || "").toLowerCase().indexOf(q) > -1;
+          return okP && okQ;
+        });
+
+        if (!shown.length){
+          listEl.innerHTML = '<div class="empty">ما في شكاوى مطابقة للبحث أو الفلتر الحالي.<br>جرّب كلمة تانية أو اختر «الكل».</div>';
+        } else {
+          listEl.innerHTML = shown.map(function(c, i){
+            return '<article class="complaint' + (c.fresh ? ' new' : '') + '">' +
+              '<div class="c-top">' +
+                '<div class="c-account">' + esc(c.account) +
+                  (c.handle ? ' <span class="handle">' + esc(c.handle) + '</span>' : '') +
+                '</div>' +
+                '<div class="badges">' + statusBadge(c.status) +
+                  (c.demo ? '<span class="badge demo">مثال توضيحي</span>' : '') +
+                '</div>' +
+              '</div>' +
+              '<div class="badges" style="margin-top:8px">' +
+                '<span class="badge platform">' + esc(c.platform) + '</span>' +
+                '<span class="badge violation">' + esc(c.type) + '</span>' +
+              '</div>' +
+              '<p class="c-desc">' + esc(c.desc) + '</p>' +
+              '<div class="c-foot">' +
+                '<span>رابط الدليل: <a href="' + esc(c.link) + '" target="_blank" rel="noopener noreferrer">' + esc(c.link) + '</a></span>' +
+                (c.when ? '<span>وقت البث: ' + esc(c.when) + '</span>' : '') +
+                '<span>المُبلِّغ: ' + esc(c.reporter || "مُبلِّغ مجهول") + '</span>' +
+              '</div>' +
+            '</article>';
+          }).join("");
+        }
+
+        metaEl.textContent = "عم ينعرض " + shown.length + " من أصل " + complaints.length + " شكوى.";
+
+        // إحصائيات
+        var accounts = {};
+        complaints.forEach(function(c){ accounts[c.account] = true; });
+        document.getElementById("statTotal").textContent = complaints.length;
+        document.getElementById("statAccounts").textContent = Object.keys(accounts).length;
+        document.getElementById("statPending").textContent = complaints.filter(function(c){ return c.status === "pending"; }).length;
+        document.getElementById("statDone").textContent = complaints.filter(function(c){ return c.status === "done"; }).length;
+      }
+
+      document.getElementById("platformChips").addEventListener("click", function(e){
+        var btn = e.target.closest(".chip-btn");
+        if (!btn) return;
+        activePlatform = btn.getAttribute("data-platform");
+        var all = this.querySelectorAll(".chip-btn");
+        for (var i = 0; i < all.length; i++) all[i].classList.remove("active");
+        btn.classList.add("active");
+        render();
+      });
+      searchEl.addEventListener("input", render);
+
+      function setInvalid(id, bad){
+        document.getElementById(id).classList.toggle("invalid", bad);
+        return !bad;
+      }
+
+      document.getElementById("complaintForm").addEventListener("submit", function(e){
+        e.preventDefault();
+        var account = document.getElementById("account").value.trim();
+        var handle = document.getElementById("handle").value.trim();
+        var platform = document.getElementById("platform").value;
+        var link = document.getElementById("link").value.trim();
+        var type = document.getElementById("type").value;
+        var desc = document.getElementById("desc").value.trim();
+        var whenRaw = document.getElementById("when").value;
+        var reporter = document.getElementById("reporter").value.trim();
+        var truth = document.getElementById("truth").checked;
+
+        var ok = true;
+        ok = setInvalid("f-account", !account) && ok;
+        ok = setInvalid("f-platform", !platform) && ok;
+        ok = setInvalid("f-link", !/^https?:\/\/.+/i.test(link)) && ok;
+        ok = setInvalid("f-type", !type) && ok;
+        ok = setInvalid("f-desc", desc.length < 10) && ok;
+        ok = setInvalid("f-truth", !truth) && ok;
+        if (!ok){
+          var firstBad = document.querySelector(".field.invalid");
+          if (firstBad) firstBad.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+
+        var whenText = "";
+        if (whenRaw){
+          var d = new Date(whenRaw);
+          if (!isNaN(d.getTime())){
+            whenText = d.toLocaleDateString("ar-EG") + " — " + d.toLocaleTimeString("ar-EG", { hour: "numeric", minute: "2-digit" });
+          }
+        }
+        if (handle && handle.charAt(0) !== "@") handle = "@" + handle;
+
+        complaints.forEach(function(c){ c.fresh = false; });
+        complaints.unshift({
+          account: account, handle: handle, platform: platform, link: link,
+          type: type, desc: desc, when: whenText,
+          reporter: reporter || "مُبلِّغ مجهول",
+          status: "pending", demo: false, fresh: true
+        });
+
+        activePlatform = "all";
+        var all = document.querySelectorAll("#platformChips .chip-btn");
+        for (var i = 0; i < all.length; i++) all[i].classList.toggle("active", all[i].getAttribute("data-platform") === "all");
+        searchEl.value = "";
+        render();
+
+        var okBox = document.getElementById("formOk");
+        okBox.textContent = "تم استلام شكواك ونشرها في السجل العلني باسم «" + account + "» — حالتها هلأ: قيد التحقق. شكراً لمساهمتك.";
+        okBox.classList.add("show");
+        this.reset();
+        document.getElementById("registry").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      render();
+    </script>
+  </body>
+</html>
