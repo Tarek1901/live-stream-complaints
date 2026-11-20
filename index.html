@@ -130,6 +130,27 @@
       }
       .form-ok.show{display:block}
 
+      /* ---------- Evidence upload ---------- */
+      .upload-box{border:1.5px dashed var(--line);border-radius:10px;background:var(--surface-2);padding:14px;text-align:center}
+      .upload-btn{
+        display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:#fff;border:0;cursor:pointer;
+        font-family:inherit;font-weight:800;font-size:.95rem;padding:9px 20px;border-radius:10px;min-height:44px;
+      }
+      .upload-btn svg{flex:none}
+      .upload-box .hint{margin-top:8px}
+      .attach-list{display:flex;flex-direction:column;gap:8px;margin-top:10px;text-align:start}
+      .attach-item{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px}
+      .attach-item img,.attach-item video{width:54px;height:54px;object-fit:cover;border-radius:8px;flex:none;background:var(--surface-2)}
+      .attach-meta{flex:1;min-width:0}
+      .attach-name{font-weight:700;font-size:.88rem;word-break:break-all;line-height:1.4}
+      .attach-size{font-size:.78rem;color:var(--muted)}
+      .attach-remove{
+        flex:none;background:var(--red-soft);color:var(--red);border:0;border-radius:8px;cursor:pointer;
+        font-family:inherit;font-weight:800;font-size:.82rem;padding:6px 12px;min-height:36px;
+      }
+      .attach-err{display:none;font-size:.83rem;color:var(--red);font-weight:700;margin-top:8px;text-align:start}
+      .attach-err.show{display:block}
+
       /* ---------- Registry ---------- */
       .toolbar{padding:14px 20px 4px;display:flex;flex-direction:column;gap:12px}
       .search-row{display:flex;gap:10px;flex-wrap:wrap}
@@ -165,6 +186,9 @@
       .c-desc{margin:8px 0 0;font-size:.96rem}
       .c-foot{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;font-size:.85rem;color:var(--muted)}
       .c-foot a{font-weight:700;word-break:break-all}
+      .c-media-label{margin-top:12px;font-size:.85rem;font-weight:800;color:var(--muted)}
+      .c-media{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+      .c-media img,.c-media video{width:132px;height:96px;object-fit:cover;border-radius:10px;border:1px solid var(--line);background:var(--surface-2)}
 
       /* ---------- Info sections ---------- */
       .sections{display:grid;grid-template-columns:1fr;gap:22px;margin-top:26px}
@@ -272,6 +296,20 @@
               <div class="err">اكتب وصفاً قصيراً وواضحاً للمخالفة (١٠ أحرف على الأقل).</div>
             </div>
 
+            <div class="field" id="f-files">
+              <label>إرفاق صور أو فيديوهات كدليل <span class="opt">— اختياري</span></label>
+              <div class="upload-box">
+                <input id="evidence" type="file" accept="image/*,video/*" multiple hidden />
+                <button type="button" class="upload-btn" id="uploadBtn">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="m6 10 6-6 6 6"/><path d="M4 20h16"/></svg>
+                  ارفع صور أو فيديوهات
+                </button>
+                <div class="hint">لقطات شاشة أو مقاطع قصيرة من البث بتقوّي الشكوى — لحد ٦ ملفات، وبتنعرض مع الشكوى بالسجل العلني.</div>
+                <div class="attach-list" id="attachList"></div>
+                <div class="attach-err" id="attachErr" role="alert"></div>
+              </div>
+            </div>
+
             <div class="field">
               <label for="when">تاريخ ووقت البث <span class="opt">— اختياري</span></label>
               <input id="when" type="datetime-local" />
@@ -328,7 +366,7 @@
             </li>
             <li>
               <span class="num">٢</span>
-              <div><b>بتقدّم الشكوى من النموذج</b><span>الشكوى بتنضاف فوراً للسجل العلني المعروض بهالصفحة باسم الحساب المُشتكى عليه.</span></div>
+              <div><b>بتقدّم الشكوى من النموذج</b><span>الشكوى بتنضاف فوراً للسجل العلني المعروض بهالصفحة باسم الحساب المُشتكى عليه، مع الصور والفيديوهات يلي بترفقها كدليل.</span></div>
             </li>
             <li>
               <span class="num">٣</span>
@@ -401,6 +439,18 @@
           .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
       }
 
+      function mediaHtml(c){
+        if (!c.attachments || !c.attachments.length) return "";
+        var items = c.attachments.map(function(a){
+          if (a.type && a.type.indexOf("video") === 0){
+            return '<video src="' + a.url + '" controls preload="metadata" playsinline></video>';
+          }
+          return '<img src="' + a.url + '" alt="صورة مرفقة كدليل على المخالفة" loading="lazy" />';
+        }).join("");
+        return '<div class="c-media-label">أدلة مرفقة (' + c.attachments.length + '):</div>' +
+               '<div class="c-media">' + items + '</div>';
+      }
+
       function statusBadge(st){
         return st === "done"
           ? '<span class="badge status-done">أُحيلت للجهة المعنية</span>'
@@ -434,6 +484,7 @@
                 '<span class="badge violation">' + esc(c.type) + '</span>' +
               '</div>' +
               '<p class="c-desc">' + esc(c.desc) + '</p>' +
+              mediaHtml(c) +
               '<div class="c-foot">' +
                 '<span>رابط الدليل: <a href="' + esc(c.link) + '" target="_blank" rel="noopener noreferrer">' + esc(c.link) + '</a></span>' +
                 (c.when ? '<span>وقت البث: ' + esc(c.when) + '</span>' : '') +
@@ -464,6 +515,69 @@
         render();
       });
       searchEl.addEventListener("input", render);
+
+      // ---------- إرفاق الأدلة (صور / فيديوهات) ----------
+      var MAX_FILES = 6;
+      var pendingFiles = [];
+      var fileInput = document.getElementById("evidence");
+      var attachList = document.getElementById("attachList");
+      var attachErr = document.getElementById("attachErr");
+
+      function fmtSize(bytes){
+        if (bytes < 1024) return bytes + " بايت";
+        if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + " كيلوبايت";
+        return (bytes / (1024 * 1024)).toFixed(1) + " ميغابايت";
+      }
+
+      function showAttachErr(msg){
+        attachErr.textContent = msg || "";
+        attachErr.classList.toggle("show", !!msg);
+      }
+
+      function renderAttach(){
+        if (!pendingFiles.length){ attachList.innerHTML = ""; return; }
+        attachList.innerHTML = pendingFiles.map(function(a, i){
+          var isVideo = a.type.indexOf("video") === 0;
+          var thumb = isVideo
+            ? '<video src="' + a.url + '" preload="metadata" muted playsinline></video>'
+            : '<img src="' + a.url + '" alt="" />';
+          return '<div class="attach-item">' + thumb +
+            '<div class="attach-meta"><div class="attach-name">' + esc(a.name) + '</div>' +
+            '<div class="attach-size">' + (isVideo ? "فيديو" : "صورة") + " — " + fmtSize(a.size) + '</div></div>' +
+            '<button type="button" class="attach-remove" data-remove="' + i + '">حذف</button></div>';
+        }).join("");
+      }
+
+      document.getElementById("uploadBtn").addEventListener("click", function(){ fileInput.click(); });
+
+      fileInput.addEventListener("change", function(){
+        showAttachErr("");
+        var files = this.files;
+        for (var i = 0; i < files.length; i++){
+          var f = files[i];
+          if (f.type.indexOf("image/") !== 0 && f.type.indexOf("video/") !== 0){
+            showAttachErr("في ملفات ما انضافت لأنها مو صور أو فيديوهات.");
+            continue;
+          }
+          if (pendingFiles.length >= MAX_FILES){
+            showAttachErr("الحد الأقصى ٦ ملفات مرفقة للشكوى الوحدة.");
+            break;
+          }
+          pendingFiles.push({ name: f.name, type: f.type, size: f.size, url: URL.createObjectURL(f) });
+        }
+        this.value = "";
+        renderAttach();
+      });
+
+      attachList.addEventListener("click", function(e){
+        var btn = e.target.closest("[data-remove]");
+        if (!btn) return;
+        var idx = parseInt(btn.getAttribute("data-remove"), 10);
+        if (pendingFiles[idx]) URL.revokeObjectURL(pendingFiles[idx].url);
+        pendingFiles.splice(idx, 1);
+        showAttachErr("");
+        renderAttach();
+      });
 
       function setInvalid(id, bad){
         document.getElementById(id).classList.toggle("invalid", bad);
@@ -509,6 +623,7 @@
           account: account, handle: handle, platform: platform, link: link,
           type: type, desc: desc, when: whenText,
           reporter: reporter || "مُبلِّغ مجهول",
+          attachments: pendingFiles.slice(),
           status: "pending", demo: false, fresh: true
         });
 
@@ -518,10 +633,16 @@
         searchEl.value = "";
         render();
 
+        var attCount = complaints[0].attachments.length;
         var okBox = document.getElementById("formOk");
-        okBox.textContent = "تم استلام شكواك ونشرها في السجل العلني باسم «" + account + "» — حالتها هلأ: قيد التحقق. شكراً لمساهمتك.";
+        okBox.textContent = "تم استلام شكواك ونشرها في السجل العلني باسم «" + account + "»" +
+          (attCount ? " مع " + attCount + " ملف مرفق كدليل" : "") +
+          " — حالتها هلأ: قيد التحقق. شكراً لمساهمتك.";
         okBox.classList.add("show");
         this.reset();
+        pendingFiles = [];
+        renderAttach();
+        showAttachErr("");
         document.getElementById("registry").scrollIntoView({ behavior: "smooth", block: "start" });
       });
 
