@@ -4,6 +4,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
+    <script>
+      // ضبط الثيم الابتدائي صراحةً على وسم html قبل أول رسم،
+      // حتى لا يعتمد الوضع الليلي على مطابقة استعلام الوسائط وحده.
+      (function(){
+        try{
+          var dark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+          var root = document.documentElement;
+          root.setAttribute("data-theme", dark ? "dark" : "light");
+          root.style.colorScheme = dark ? "dark" : "light";
+        }catch(e){}
+      })();
+    </script>
     <link rel="icon" href="data:," />
     <title>موقع الإبلاغ عن البثوث غير الأخلاقية</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -31,13 +43,13 @@
       }
       @media (prefers-color-scheme: dark){
         :root:not([data-theme="light"]){
-          --bg:#0f141b;
-          --surface:#182130;
-          --surface-2:#1e2939;
-          --ink:#edf2f7;
-          --muted:#9fb0c3;
-          --line:#2c3a4e;
-          --navy:#2c5a8a;
+          --bg:#0a0c0f;
+          --surface:#15181e;
+          --surface-2:#1e2129;
+          --ink:#f2f4f7;
+          --muted:#a3aeb9;
+          --line:#2b3038;
+          --navy:#1d3a58;
           --red:#e0655c;
           --red-soft:#3a2321;
           --amber:#e0b34c;
@@ -49,13 +61,13 @@
         }
       }
       :root[data-theme="dark"]{
-        --bg:#0f141b;
-        --surface:#182130;
-        --surface-2:#1e2939;
-        --ink:#edf2f7;
-        --muted:#9fb0c3;
-        --line:#2c3a4e;
-        --navy:#2c5a8a;
+        --bg:#0a0c0f;
+        --surface:#15181e;
+        --surface-2:#1e2129;
+        --ink:#f2f4f7;
+        --muted:#a3aeb9;
+        --line:#2b3038;
+        --navy:#1d3a58;
         --red:#e0655c;
         --red-soft:#3a2321;
         --amber:#e0b34c;
@@ -65,8 +77,38 @@
         --chip:#24344a;
         --shadow:0 10px 28px rgba(0,0,0,.35);
       }
+      /* تجاوزات صريحة بألوان حرفية للوضع الليلي: تضمن اسوداد كل الأسطح
+         البيضاء (الخلفية والبطاقات والحقول) فور تفعيل data-theme="dark"،
+         حتى لو لم يُعد المتصفح رسم قيم المتغيرات عند تبديل السمة. */
+      :root[data-theme="dark"]{background:#0a0c0f}
+      :root[data-theme="dark"] body{background:#0a0c0f;color:#f2f4f7}
+      :root[data-theme="dark"] .hero{background:#0b1521}
+      :root[data-theme="dark"] .card,
+      :root[data-theme="dark"] .complaint,
+      :root[data-theme="dark"] .attach-item{background:#15181e;border-color:#2b3038}
+      :root[data-theme="dark"] .field input,
+      :root[data-theme="dark"] .field select,
+      :root[data-theme="dark"] .field textarea,
+      :root[data-theme="dark"] .search-row input{background:#1e2129;color:#f2f4f7;border-color:#2b3038}
+      :root[data-theme="dark"] .field input:focus,
+      :root[data-theme="dark"] .field select:focus,
+      :root[data-theme="dark"] .field textarea:focus,
+      :root[data-theme="dark"] .search-row input:focus{background:#15181e;border-color:#8fc1f0}
+      :root[data-theme="dark"] .upload-box{background:#1e2129;border-color:#2b3038}
+      :root[data-theme="dark"] .chip-btn{background:#1e2129;color:#f2f4f7;border-color:#2b3038}
+      :root[data-theme="dark"] .chip-btn.active{background:#1d3a58;border-color:#1d3a58;color:#fff}
+      :root[data-theme="dark"] .empty{border-color:#2b3038;color:#a3aeb9}
+      :root[data-theme="dark"] .badge{background:#23262e;color:#f2f4f7}
+      :root[data-theme="dark"] .badge.platform{background:#1d3a58;color:#fff}
+      :root[data-theme="dark"] .badge.violation{background:#3a2321;color:#e0655c}
+      :root[data-theme="dark"] .badge.status-pending{background:#38300f;color:#e0b34c}
+      :root[data-theme="dark"] .badge.status-done{background:#173528;color:#4cc084}
+      :root[data-theme="dark"] .badge.demo{background:transparent;color:#a3aeb9;border-color:#a3aeb9}
+      :root[data-theme="dark"] .notice{background:#38300f;border-color:#e0b34c;color:#f2f4f7}
+      :root[data-theme="dark"] .form-ok{background:#173528;color:#4cc084;border-color:#4cc084}
+      :root[data-theme="dark"] footer{color:#a3aeb9}
       *{box-sizing:border-box}
-      html{scroll-behavior:smooth}
+      html{scroll-behavior:smooth;background:var(--bg)}
       body{
         margin:0;background:var(--bg);color:var(--ink);
         font-family:"Tajawal",system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;
